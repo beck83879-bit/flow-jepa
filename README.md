@@ -1,5 +1,10 @@
 # Flow-JEPA
 
+> **Reproduction branch:** See [REPRODUCTION.md](REPRODUCTION.md) for the Chinese
+> reproduction guide, exact experiment settings, seed 3072/3073 results, and known
+> limitations. The upstream project description and demonstrations below are
+> preserved for attribution; they are not measurements from this reproduction.
+
 [![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b.svg)](https://arxiv.org/abs/2608.29029)
 
 Flow-JEPA is an action-conditioned world model that predicts future visual

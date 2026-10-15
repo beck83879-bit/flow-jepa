@@ -1,0 +1,22 @@
+defaults:
+  - paper_base
+  - override data: dmc
+  - _self_
+
+subdir: flow_reacher_seed${seed}_init3073
+data:
+  dataset:
+    name: ${oc.env:STABLEWM_HOME}/reacher.h5
+flow_matching:
+  source: noisy_current
+  source_noise_scale: 0.5
+pretrained_visual_encoder:
+  enabled: true
+  checkpoint: ${oc.env:STABLEWM_HOME}/checkpoints/reacher_paper_seed3073/weights_epoch_10.pt
+  load_projector: true
+  strict: true
+  freeze: false
+model:
+  predictor:
+    causal_self_attention: true
+    dropout: 0.1

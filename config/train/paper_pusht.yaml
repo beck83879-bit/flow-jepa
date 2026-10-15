@@ -1,0 +1,25 @@
+defaults:
+  - paper_base
+  - override data: pusht
+  - _self_
+
+subdir: flow_pusht_seed${seed}_init3072
+data:
+  dataset:
+    name: ${oc.env:STABLEWM_HOME}/pusht_expert_train.h5
+flow_matching:
+  source: noisy_current
+  source_noise_scale: 0.5
+pretrained_visual_encoder:
+  enabled: true
+  checkpoint: ${oc.env:STABLEWM_HOME}/checkpoints/pusht_paper_seed3072/weights_epoch_10.pt
+  load_projector: true
+  strict: true
+  freeze: true
+model:
+  predictor:
+    causal_self_attention: true
+    dropout: 0.0
+loss:
+  sigreg:
+    weight: 0.09

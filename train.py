@@ -109,6 +109,7 @@ def flow_jepa_forward(self, batch, stage, cfg):
 
 @hydra.main(version_base=None, config_path="./config/train", config_name="fjepa")
 def run(cfg):
+    pl.seed_everything(cfg.seed, workers=True)
     #########################
     ##       dataset       ##
     #########################
@@ -238,6 +239,7 @@ def run(cfg):
         trainer=trainer,
         module=world_model,
         data=data_module,
+        seed=cfg.seed,
         ckpt_path=ckpt_path if ckpt_path.exists() else None,
     )
 

@@ -1,7 +1,36 @@
 from copy import deepcopy
 
 import numpy as np
+import stable_worldmodel as swm
 import torch
+
+
+class EvaluationWorld(swm.World):
+    def __init__(self, *args, fallback_reset_seed=None, reacher_grid_texuniform=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fallback_reset_seed = fallback_reset_seed
+        self.reacher_grid_texuniform = reacher_grid_texuniform
+
+    def reset(self, seed=None, options=None):
+        result = super().reset(
+            seed=self.fallback_reset_seed if seed is None else seed, options=options
+        )
+        if self.reacher_grid_texuniform is not None:
+            for wrapped in self.envs.envs:
+                env = wrapped.unwrapped
+                if env.__class__.__name__ != "ReacherDMControlWrapper":
+                    raise ValueError("Grid material override only applies to Reacher")
+                model = env.env.physics.model
+                model.mat_texuniform[model.name2id("grid", "material")] = self.reacher_grid_texuniform
+        return result
+
+
+def json_default(value):
+    if isinstance(value, (np.ndarray, torch.Tensor)):
+        return value.tolist()
+    if isinstance(value, np.generic):
+        return value.item()
+    raise TypeError(type(value).__name__)
 
 
 def extract_init_goal(dataset, episodes_idx, start_steps, goal_offset):
@@ -46,13 +75,14 @@ def apply_callables(env, callables, init_state):
     for spec in callables or []:
         method = spec["method"]
         if not hasattr(env, method):
-            continue
+            raise AttributeError(f"Missing environment setup method: {method}")
         prepared = {}
         for name, data in spec.get("args", {}).items():
             if data.get("in_dataset", True):
                 key = data.get("value")
-                if key in init_state:
-                    prepared[name] = deepcopy(init_state[key])
+                if key not in init_state:
+                    raise KeyError(f"Missing dataset setup key: {key}")
+                prepared[name] = deepcopy(init_state[key])
             else:
                 prepared[name] = data.get("value")
         getattr(env, method)(**prepared)

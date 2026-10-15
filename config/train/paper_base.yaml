@@ -1,0 +1,38 @@
+defaults:
+  - fjepa
+  - _self_
+
+seed: 3072
+output_model_name: ${subdir}
+num_workers: 6
+history_size: 1
+num_preds: 5
+num_flow_steps: 8
+img_size: 224
+embed_dim: 192
+train_split: 0.9
+
+trainer:
+  devices: 1
+  max_epochs: 20
+  precision: bf16-mixed
+  accelerator: gpu
+  gradient_clip_val: 1.0
+loader:
+  batch_size: 128
+data:
+  dataset:
+    num_steps: 6
+    frameskip: 5
+optimizer:
+  type: AdamW
+  lr: 5e-5
+  weight_decay: 1e-3
+loss:
+  sigreg:
+    weight: 0.1
+    kwargs:
+      knots: 17
+      num_proj: 1024
+wandb:
+  enabled: false

@@ -1,0 +1,18 @@
+defaults:
+  - paper_base
+  - override data: ogb
+  - _self_
+
+subdir: flow_cube_seed${seed}
+data:
+  dataset:
+    name: ${oc.env:STABLEWM_HOME}/cube_single_expert.h5
+flow_matching:
+  source: standard_noise
+  source_noise_scale: 1.0
+pretrained_visual_encoder:
+  enabled: false
+model:
+  predictor:
+    causal_self_attention: false
+    dropout: 0.1
