@@ -1,0 +1,662 @@
+{
+  "diagnostic_only": true,
+  "device": "cpu",
+  "dtype": "float32",
+  "input_kind": "synthetic latent history and normalized-scale actions",
+  "probe_seed": 20261015,
+  "last_action_additive_perturbation": 0.25,
+  "torch_version": "2.6.0+cu124",
+  "script_sha256": "0825a736216a80ac72aeb19c457b7ab6db424c3bd74392c564b67935c833bb47",
+  "models": {
+    "tworoom": {
+      "checkpoint": "flow_tworoom_seed3073/weights_epoch_20.pt",
+      "checkpoint_sha256": "2f7b7eb19be4cc9195890e85cb3f04cdef80fe9e907361468c56d0c8383000f7",
+      "model_class": "jepa.JEPA",
+      "predictor_class": "module.FlowTrajectoryPredictor",
+      "loaded_core_sha256": {
+        "jepa.py": "30a604092821468f26d44e014089bd2fa4e24f2311860bc14d4cef9a9fae7b58",
+        "module.py": "06fbc378cc73d3dcb5447259cd20323a437e9378ee45f716718c2de391a7f305"
+      },
+      "source": "standard_noise",
+      "source_std": 1.0,
+      "causal_self_attention": false,
+      "source_reference_max_abs_error": 0.0,
+      "euler_reference_max_abs_error": 0.0,
+      "flow_loss_reference_abs_error": 0.0,
+      "literal_squared_norm_divided_by_mse": 959.9998168945312,
+      "action_prefix_embedding_max_abs_change": 0.0,
+      "velocity_first_token_max_abs_change": 0.027292251586914062,
+      "prediction_first_token_max_abs_change": 0.09948503971099854,
+      "velocity_last_token_max_abs_change": 1.1434293985366821,
+      "first_token_change_after_each_block": [
+        0.0,
+        3.5762786865234375e-07,
+        0.0003867149353027344,
+        0.005208015441894531,
+        0.015642166137695312,
+        0.0204925537109375
+      ],
+      "first_velocity_projection_gradient_last_action_max_abs": 0.024638092145323753,
+      "training_config": {
+        "output_model_name": "flow_tworoom_seed3073",
+        "subdir": "flow_tworoom_seed3073",
+        "num_workers": 6,
+        "train_split": 0.9,
+        "seed": 3073,
+        "img_size": 224,
+        "embed_dim": 192,
+        "history_size": 1,
+        "num_flow_steps": 8,
+        "flow_matching": {
+          "source": "standard_noise",
+          "source_noise_scale": 1.0
+        },
+        "pretrained_visual_encoder": {
+          "enabled": false,
+          "checkpoint": null,
+          "load_projector": true,
+          "strict": true,
+          "freeze": true
+        },
+        "trainer": {
+          "max_epochs": 20,
+          "devices": 1,
+          "accelerator": "gpu",
+          "precision": "bf16-mixed",
+          "gradient_clip_val": 1.0
+        },
+        "loader": {
+          "batch_size": 128,
+          "num_workers": 6,
+          "persistent_workers": true,
+          "prefetch_factor": 3,
+          "pin_memory": true
+        },
+        "optimizer": {
+          "type": "AdamW",
+          "lr": 5e-05,
+          "weight_decay": 0.001
+        },
+        "num_preds": 5,
+        "loss": {
+          "sigreg": {
+            "weight": 0.1,
+            "kwargs": {
+              "knots": 17,
+              "num_proj": 1024
+            }
+          }
+        },
+        "wandb": {
+          "enabled": false,
+          "config": {
+            "entity": null,
+            "project": "flow-jepa",
+            "name": "flow_tworoom_seed3073",
+            "id": "flow_tworoom_seed3073",
+            "resume": "allow",
+            "log_model": false
+          }
+        },
+        "data": {
+          "dataset": {
+            "num_steps": 6,
+            "frameskip": 5,
+            "name": "/home/wangtz/.stable-wm/tworoom.h5",
+            "keys_to_load": [
+              "pixels",
+              "action",
+              "proprio"
+            ],
+            "keys_to_cache": [
+              "action",
+              "proprio"
+            ]
+          }
+        },
+        "model": {
+          "_target_": "jepa.JEPA",
+          "num_flow_steps": 8,
+          "flow_source": "standard_noise",
+          "flow_source_noise_scale": 1.0,
+          "freeze_encoder": false,
+          "freeze_projector": false,
+          "encoder": {
+            "_target_": "stable_pretraining.backbone.utils.vit_hf",
+            "size": "tiny",
+            "patch_size": 14,
+            "image_size": 224,
+            "pretrained": false,
+            "use_mask_token": false
+          },
+          "predictor": {
+            "_target_": "module.FlowTrajectoryPredictor",
+            "input_dim": 192,
+            "hidden_dim": 192,
+            "action_dim": 192,
+            "output_dim": 192,
+            "output_proj_hidden_dim": 768,
+            "causal_self_attention": false,
+            "depth": 6,
+            "heads": 16,
+            "mlp_dim": 2048,
+            "dim_head": 64,
+            "dropout": 0.1,
+            "emb_dropout": 0.0
+          },
+          "action_encoder": {
+            "_target_": "module.Embedder",
+            "input_dim": 10,
+            "emb_dim": 192
+          },
+          "projector": {
+            "_target_": "module.MLP",
+            "input_dim": 192,
+            "output_dim": 192,
+            "hidden_dim": 2048,
+            "norm_fn": {
+              "_target_": "torch.nn.BatchNorm1d",
+              "_partial_": true
+            }
+          },
+          "pred_proj": null
+        }
+      }
+    },
+    "cube": {
+      "checkpoint": "flow_cube_seed3073/weights_epoch_20.pt",
+      "checkpoint_sha256": "6c94fe4e887c19f2fa3599d68839c090f7bc51ba93b3b7d5d20ccc406db5da74",
+      "model_class": "jepa.JEPA",
+      "predictor_class": "module.FlowTrajectoryPredictor",
+      "loaded_core_sha256": {
+        "jepa.py": "30a604092821468f26d44e014089bd2fa4e24f2311860bc14d4cef9a9fae7b58",
+        "module.py": "06fbc378cc73d3dcb5447259cd20323a437e9378ee45f716718c2de391a7f305"
+      },
+      "source": "standard_noise",
+      "source_std": 1.0,
+      "causal_self_attention": false,
+      "source_reference_max_abs_error": 0.0,
+      "euler_reference_max_abs_error": 0.0,
+      "flow_loss_reference_abs_error": 0.0,
+      "literal_squared_norm_divided_by_mse": 960.0000610351562,
+      "action_prefix_embedding_max_abs_change": 0.0,
+      "velocity_first_token_max_abs_change": 0.0480961799621582,
+      "prediction_first_token_max_abs_change": 0.11317253112792969,
+      "velocity_last_token_max_abs_change": 1.2684510946273804,
+      "first_token_change_after_each_block": [
+        0.0,
+        0.0,
+        0.0025603771209716797,
+        0.004300609230995178,
+        0.008560776710510254,
+        0.023362159729003906
+      ],
+      "first_velocity_projection_gradient_last_action_max_abs": 0.025847239419817924,
+      "training_config": {
+        "output_model_name": "flow_cube_seed3073",
+        "subdir": "flow_cube_seed3073",
+        "num_workers": 6,
+        "train_split": 0.9,
+        "seed": 3073,
+        "img_size": 224,
+        "embed_dim": 192,
+        "history_size": 1,
+        "num_flow_steps": 8,
+        "flow_matching": {
+          "source": "standard_noise",
+          "source_noise_scale": 1.0
+        },
+        "pretrained_visual_encoder": {
+          "enabled": false,
+          "checkpoint": null,
+          "load_projector": true,
+          "strict": true,
+          "freeze": true
+        },
+        "trainer": {
+          "max_epochs": 20,
+          "devices": 1,
+          "accelerator": "gpu",
+          "precision": "bf16-mixed",
+          "gradient_clip_val": 1.0
+        },
+        "loader": {
+          "batch_size": 128,
+          "num_workers": 6,
+          "persistent_workers": true,
+          "prefetch_factor": 3,
+          "pin_memory": true
+        },
+        "optimizer": {
+          "type": "AdamW",
+          "lr": 5e-05,
+          "weight_decay": 0.001
+        },
+        "num_preds": 5,
+        "loss": {
+          "sigreg": {
+            "weight": 0.1,
+            "kwargs": {
+              "knots": 17,
+              "num_proj": 1024
+            }
+          }
+        },
+        "wandb": {
+          "enabled": false,
+          "config": {
+            "entity": null,
+            "project": "flow-jepa",
+            "name": "flow_cube_seed3073",
+            "id": "flow_cube_seed3073",
+            "resume": "allow",
+            "log_model": false
+          }
+        },
+        "data": {
+          "dataset": {
+            "name": "/home/wangtz/.stable-wm/cube_single_expert.h5",
+            "num_steps": 6,
+            "frameskip": 5,
+            "keys_to_load": [
+              "pixels",
+              "action",
+              "observation"
+            ],
+            "keys_to_cache": [
+              "action",
+              "observation"
+            ],
+            "keys_to_merge": {
+              "proprio": "proprio"
+            }
+          }
+        },
+        "model": {
+          "_target_": "jepa.JEPA",
+          "num_flow_steps": 8,
+          "flow_source": "standard_noise",
+          "flow_source_noise_scale": 1.0,
+          "freeze_encoder": false,
+          "freeze_projector": false,
+          "encoder": {
+            "_target_": "stable_pretraining.backbone.utils.vit_hf",
+            "size": "tiny",
+            "patch_size": 14,
+            "image_size": 224,
+            "pretrained": false,
+            "use_mask_token": false
+          },
+          "predictor": {
+            "_target_": "module.FlowTrajectoryPredictor",
+            "input_dim": 192,
+            "hidden_dim": 192,
+            "action_dim": 192,
+            "output_dim": 192,
+            "output_proj_hidden_dim": 768,
+            "causal_self_attention": false,
+            "depth": 6,
+            "heads": 16,
+            "mlp_dim": 2048,
+            "dim_head": 64,
+            "dropout": 0.1,
+            "emb_dropout": 0.0
+          },
+          "action_encoder": {
+            "_target_": "module.Embedder",
+            "input_dim": 25,
+            "emb_dim": 192
+          },
+          "projector": {
+            "_target_": "module.MLP",
+            "input_dim": 192,
+            "output_dim": 192,
+            "hidden_dim": 2048,
+            "norm_fn": {
+              "_target_": "torch.nn.BatchNorm1d",
+              "_partial_": true
+            }
+          },
+          "pred_proj": null
+        }
+      }
+    },
+    "pusht": {
+      "checkpoint": "flow_pusht_seed3073_init3072/weights_epoch_20.pt",
+      "checkpoint_sha256": "e97916062d0386c7f21a073266eb3391043c044c96118920dd6b93e7dc9e5d43",
+      "model_class": "jepa.JEPA",
+      "predictor_class": "module.FlowTrajectoryPredictor",
+      "loaded_core_sha256": {
+        "jepa.py": "30a604092821468f26d44e014089bd2fa4e24f2311860bc14d4cef9a9fae7b58",
+        "module.py": "06fbc378cc73d3dcb5447259cd20323a437e9378ee45f716718c2de391a7f305"
+      },
+      "source": "noisy_current",
+      "source_std": 0.5,
+      "causal_self_attention": true,
+      "source_reference_max_abs_error": 0.0,
+      "euler_reference_max_abs_error": 0.0,
+      "flow_loss_reference_abs_error": 0.0,
+      "literal_squared_norm_divided_by_mse": 960.0,
+      "action_prefix_embedding_max_abs_change": 0.0,
+      "velocity_first_token_max_abs_change": 0.0,
+      "prediction_first_token_max_abs_change": 0.0,
+      "velocity_last_token_max_abs_change": 0.7924537658691406,
+      "first_token_change_after_each_block": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "first_velocity_projection_gradient_last_action_max_abs": 0.0,
+      "training_config": {
+        "output_model_name": "flow_pusht_seed3073_init3072",
+        "subdir": "flow_pusht_seed3073_init3072",
+        "num_workers": 6,
+        "train_split": 0.9,
+        "seed": 3073,
+        "img_size": 224,
+        "embed_dim": 192,
+        "history_size": 1,
+        "num_flow_steps": 8,
+        "flow_matching": {
+          "source": "noisy_current",
+          "source_noise_scale": 0.5
+        },
+        "pretrained_visual_encoder": {
+          "enabled": true,
+          "checkpoint": "/home/wangtz/.stable-wm/checkpoints/pusht_paper_seed3072/weights_epoch_10.pt",
+          "load_projector": true,
+          "strict": true,
+          "freeze": true
+        },
+        "trainer": {
+          "max_epochs": 20,
+          "devices": 1,
+          "accelerator": "gpu",
+          "precision": "bf16-mixed",
+          "gradient_clip_val": 1.0
+        },
+        "loader": {
+          "batch_size": 128,
+          "num_workers": 6,
+          "persistent_workers": true,
+          "prefetch_factor": 3,
+          "pin_memory": true
+        },
+        "optimizer": {
+          "type": "AdamW",
+          "lr": 5e-05,
+          "weight_decay": 0.001
+        },
+        "num_preds": 5,
+        "loss": {
+          "sigreg": {
+            "weight": 0.09,
+            "kwargs": {
+              "knots": 17,
+              "num_proj": 1024
+            }
+          }
+        },
+        "wandb": {
+          "enabled": false,
+          "config": {
+            "entity": null,
+            "project": "flow-jepa",
+            "name": "flow_pusht_seed3073_init3072",
+            "id": "flow_pusht_seed3073_init3072",
+            "resume": "allow",
+            "log_model": false
+          }
+        },
+        "data": {
+          "dataset": {
+            "num_steps": 6,
+            "frameskip": 5,
+            "name": "/home/wangtz/.stable-wm/pusht_expert_train.h5",
+            "keys_to_load": [
+              "pixels",
+              "action",
+              "proprio",
+              "state"
+            ],
+            "keys_to_cache": [
+              "action",
+              "proprio",
+              "state"
+            ]
+          }
+        },
+        "model": {
+          "_target_": "jepa.JEPA",
+          "num_flow_steps": 8,
+          "flow_source": "noisy_current",
+          "flow_source_noise_scale": 0.5,
+          "freeze_encoder": true,
+          "freeze_projector": true,
+          "encoder": {
+            "_target_": "stable_pretraining.backbone.utils.vit_hf",
+            "size": "tiny",
+            "patch_size": 14,
+            "image_size": 224,
+            "pretrained": false,
+            "use_mask_token": false
+          },
+          "predictor": {
+            "_target_": "module.FlowTrajectoryPredictor",
+            "input_dim": 192,
+            "hidden_dim": 192,
+            "action_dim": 192,
+            "output_dim": 192,
+            "output_proj_hidden_dim": 768,
+            "causal_self_attention": true,
+            "depth": 6,
+            "heads": 16,
+            "mlp_dim": 2048,
+            "dim_head": 64,
+            "dropout": 0.0,
+            "emb_dropout": 0.0
+          },
+          "action_encoder": {
+            "_target_": "module.Embedder",
+            "input_dim": 10,
+            "emb_dim": 192
+          },
+          "projector": {
+            "_target_": "module.MLP",
+            "input_dim": 192,
+            "output_dim": 192,
+            "hidden_dim": 2048,
+            "norm_fn": {
+              "_target_": "torch.nn.BatchNorm1d",
+              "_partial_": true
+            }
+          },
+          "pred_proj": null
+        }
+      }
+    },
+    "reacher": {
+      "checkpoint": "flow_reacher_seed3073_init3073/weights_epoch_20.pt",
+      "checkpoint_sha256": "6a7930f370850a3ff7cd1a51e41cedf3df0f06a7e9fc0095c0d060baed666d5c",
+      "model_class": "jepa.JEPA",
+      "predictor_class": "module.FlowTrajectoryPredictor",
+      "loaded_core_sha256": {
+        "jepa.py": "30a604092821468f26d44e014089bd2fa4e24f2311860bc14d4cef9a9fae7b58",
+        "module.py": "06fbc378cc73d3dcb5447259cd20323a437e9378ee45f716718c2de391a7f305"
+      },
+      "source": "noisy_current",
+      "source_std": 0.5,
+      "causal_self_attention": true,
+      "source_reference_max_abs_error": 0.0,
+      "euler_reference_max_abs_error": 0.0,
+      "flow_loss_reference_abs_error": 0.0,
+      "literal_squared_norm_divided_by_mse": 960.0000610351562,
+      "action_prefix_embedding_max_abs_change": 0.0,
+      "velocity_first_token_max_abs_change": 0.0,
+      "prediction_first_token_max_abs_change": 0.0,
+      "velocity_last_token_max_abs_change": 0.09929108619689941,
+      "first_token_change_after_each_block": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "first_velocity_projection_gradient_last_action_max_abs": 0.0,
+      "training_config": {
+        "output_model_name": "flow_reacher_seed3073_init3073",
+        "subdir": "flow_reacher_seed3073_init3073",
+        "num_workers": 6,
+        "train_split": 0.9,
+        "seed": 3073,
+        "img_size": 224,
+        "embed_dim": 192,
+        "history_size": 1,
+        "num_flow_steps": 8,
+        "flow_matching": {
+          "source": "noisy_current",
+          "source_noise_scale": 0.5
+        },
+        "pretrained_visual_encoder": {
+          "enabled": true,
+          "checkpoint": "/home/wangtz/.stable-wm/checkpoints/reacher_paper_seed3073/weights_epoch_10.pt",
+          "load_projector": true,
+          "strict": true,
+          "freeze": false
+        },
+        "trainer": {
+          "max_epochs": 20,
+          "devices": 1,
+          "accelerator": "gpu",
+          "precision": "bf16-mixed",
+          "gradient_clip_val": 1.0
+        },
+        "loader": {
+          "batch_size": 128,
+          "num_workers": 6,
+          "persistent_workers": true,
+          "prefetch_factor": 3,
+          "pin_memory": true
+        },
+        "optimizer": {
+          "type": "AdamW",
+          "lr": 5e-05,
+          "weight_decay": 0.001
+        },
+        "num_preds": 5,
+        "loss": {
+          "sigreg": {
+            "weight": 0.1,
+            "kwargs": {
+              "knots": 17,
+              "num_proj": 1024
+            }
+          }
+        },
+        "wandb": {
+          "enabled": false,
+          "config": {
+            "entity": null,
+            "project": "flow-jepa",
+            "name": "flow_reacher_seed3073_init3073",
+            "id": "flow_reacher_seed3073_init3073",
+            "resume": "allow",
+            "log_model": false
+          }
+        },
+        "data": {
+          "dataset": {
+            "num_steps": 6,
+            "frameskip": 5,
+            "name": "/home/wangtz/.stable-wm/reacher.h5",
+            "keys_to_load": [
+              "pixels",
+              "action",
+              "observation"
+            ],
+            "keys_to_cache": [
+              "action",
+              "observation"
+            ]
+          }
+        },
+        "model": {
+          "_target_": "jepa.JEPA",
+          "num_flow_steps": 8,
+          "flow_source": "noisy_current",
+          "flow_source_noise_scale": 0.5,
+          "freeze_encoder": false,
+          "freeze_projector": false,
+          "encoder": {
+            "_target_": "stable_pretraining.backbone.utils.vit_hf",
+            "size": "tiny",
+            "patch_size": 14,
+            "image_size": 224,
+            "pretrained": false,
+            "use_mask_token": false
+          },
+          "predictor": {
+            "_target_": "module.FlowTrajectoryPredictor",
+            "input_dim": 192,
+            "hidden_dim": 192,
+            "action_dim": 192,
+            "output_dim": 192,
+            "output_proj_hidden_dim": 768,
+            "causal_self_attention": true,
+            "depth": 6,
+            "heads": 16,
+            "mlp_dim": 2048,
+            "dim_head": 64,
+            "dropout": 0.1,
+            "emb_dropout": 0.0
+          },
+          "action_encoder": {
+            "_target_": "module.Embedder",
+            "input_dim": 10,
+            "emb_dim": 192
+          },
+          "projector": {
+            "_target_": "module.MLP",
+            "input_dim": 192,
+            "output_dim": 192,
+            "hidden_dim": 2048,
+            "norm_fn": {
+              "_target_": "torch.nn.BatchNorm1d",
+              "_partial_": true
+            }
+          },
+          "pred_proj": null
+        }
+      }
+    }
+  },
+  "rgb_noise_equation17": {
+    "10": {
+      "kernel_reference_max_abs_error": 0.0,
+      "clipped_uint8_reference_max_abs_error": 0.0,
+      "float_equation_to_uint8_max_quantization_error": 0.9999923706054688
+    },
+    "35": {
+      "kernel_reference_max_abs_error": 0.0,
+      "clipped_uint8_reference_max_abs_error": 0.0,
+      "float_equation_to_uint8_max_quantization_error": 0.9999923706054688
+    }
+  },
+  "sigreg": {
+    "weighted_symmetric_trapezoid_abs_error": 0.0,
+    "code_value": 1.0637708902359009,
+    "reference_value": 1.0637708902359009,
+    "quadrature_domain": [
+      -3,
+      3
+    ],
+    "positive_knots_including_zero": 17,
+    "num_projections": 1024,
+    "batch": 128,
+    "time_positions": 6
+  }
+}
